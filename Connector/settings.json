@@ -1,0 +1,16 @@
+{
+  "name": "ADPConnector",
+  "urlPart": "adpconnector",
+  "key": "adpconnector",
+  "description": "",
+  "modules": [
+    {
+      "id": "app-1",
+      "name": "App",
+      "urlPart": "app",
+      "key": "app",
+      "description": "",
+      "version": 1
+    }
+  ]
+}
