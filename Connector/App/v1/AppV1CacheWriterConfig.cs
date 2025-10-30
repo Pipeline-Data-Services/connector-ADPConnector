@@ -1,5 +1,5 @@
 namespace Connector.App.v1;
-
+using Connector.App.v1.Workers;
 using ESR.Hosting.CacheWriter;
 using Json.Schema.Generation;
 
@@ -14,4 +14,5 @@ using Json.Schema.Generation;
 public class AppV1CacheWriterConfig
 {
     // Data Reader configuration
+    public CacheWriterObjectConfig WorkersConfig { get; set; } = new();
 }

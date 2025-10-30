@@ -1,5 +1,5 @@
 namespace Connector.App.v1;
-
+using Connector.App.v1.Workers;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -21,14 +21,14 @@ public class AppV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefinitio
         serviceCollection.AddSingleton<GenericCacheWriterService<AppV1CacheWriterConfig>>();
         serviceCollection.AddSingleton<ICacheWriterServiceDefinition<AppV1CacheWriterConfig>>(this);
         // Register Data Readers as Singletons
+        serviceCollection.AddSingleton<WorkersDataReader>();
     }
 
     public override IDataObjectChangeDetectorProvider ConfigureChangeDetectorProvider(IChangeDetectorFactory factory, ConnectorDefinition connectorDefinition)
     {
         var options = factory.CreateProviderOptionsWithNoDefaultResolver();
-
         // Configure Data Object Keys for Data Objects that do not use the default
-
+        this.RegisterKeysForObject<WorkersDataObject>(options, connectorDefinition);
         return factory.CreateProvider(options);
     }
 
@@ -39,7 +39,7 @@ public class AppV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefinitio
             DisableDeletes = false,
             UseChangeDetection = true
         };
-
         // Register Data Reader configurations for the Cache Writer Service
+        service.RegisterDataReader<WorkersDataReader, WorkersDataObject>(ModuleId, config.WorkersConfig, dataReaderSettings);
     }
 }
