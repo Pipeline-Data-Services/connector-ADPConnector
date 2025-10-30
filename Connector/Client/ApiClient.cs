@@ -1,6 +1,7 @@
 using Connector.Connections;
 using Connector.App.v1.Workers;
 using Connector.App.v1.FederalTaxProfiles;
+using Connector.App.v1.StateTaxProfiles;
 using ESR.Hosting;
 using ESR.Hosting.Client.TokenStorage.Models;
 using Newtonsoft.Json.Linq;
@@ -391,6 +392,86 @@ public class ApiClient : ITargetSystemApiClient
         catch (JsonException ex)
         {
             throw new ApiException($"Failed to deserialize tax profile response for worker {associateOID}", ex)
+            {
+                StatusCode = 0
+            };
+        }
+    }
+
+    /// <summary>
+    /// Gets US State Tax Profiles for a specific worker and federal tax profile
+    /// Uses GET method: /payroll/v1/workers/{aoid}/us-tax-profiles/{us-tax-profile-id}/state
+    /// </summary>
+    public async Task<ApiResponse<USStateTaxProfilesResponse>> GetWorkerStateTaxProfileAsync(
+        string associateOID,
+        string usTaxProfileId,
+        CancellationToken cancellationToken = default)
+    {
+        // Enforce ADP rate limiting
+        await EnforceRateLimitAsync(cancellationToken).ConfigureAwait(false);
+
+        string relativeUrl = $"payroll/v1/workers/{associateOID}/us-tax-profiles/{usTaxProfileId}/state";
+
+        try
+        {
+            HttpResponseMessage response = await _httpClient
+                .GetAsync(relativeUrl, cancellationToken)
+                .ConfigureAwait(false);
+
+            var responseContent = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            if (response.IsSuccessStatusCode)
+            {
+                USStateTaxProfilesResponse? stateTaxProfilesResponse = null;
+                
+                if (!string.IsNullOrEmpty(responseContent))
+                {
+                    try
+                    {
+                        stateTaxProfilesResponse = JsonSerializer.Deserialize<USStateTaxProfilesResponse>(responseContent, _options);
+                    }
+                    catch (JsonException jsonEx)
+                    {
+                        // Log the actual response content to help debug structure issues
+                        throw new ApiException(
+                            $"Failed to deserialize state tax profile response for worker {associateOID}, tax profile {usTaxProfileId}. Response: {responseContent.Substring(0, Math.Min(500, responseContent.Length))}", 
+                            jsonEx)
+                        {
+                            StatusCode = (int)response.StatusCode
+                        };
+                    }
+                }
+
+                return new ApiResponse<USStateTaxProfilesResponse>
+                {
+                    IsSuccessful = true,
+                    StatusCode = (int)response.StatusCode,
+                    Data = stateTaxProfilesResponse,
+                    RawResult = await response.Content.ReadAsStreamAsync(cancellationToken: cancellationToken)
+                };
+            }
+            else
+            {
+                return new ApiResponse<USStateTaxProfilesResponse>
+                {
+                    IsSuccessful = false,
+                    StatusCode = (int)response.StatusCode,
+                    Data = null,
+                    RawResult = await response.Content.ReadAsStreamAsync(cancellationToken: cancellationToken)
+                };
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new ApiException($"HTTP request failed while fetching state tax profile for worker {associateOID}, tax profile {usTaxProfileId}", ex)
+            {
+                StatusCode = 0
+            };
+        }
+        catch (JsonException ex)
+        {
+            throw new ApiException($"Failed to deserialize state tax profile response for worker {associateOID}, tax profile {usTaxProfileId}", ex)
             {
                 StatusCode = 0
             };

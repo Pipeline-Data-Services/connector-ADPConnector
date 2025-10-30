@@ -58,7 +58,7 @@ public class AppV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefinitio
         // Register Data Reader configurations for the Cache Writer Service
         //todo: enable workers once their data object is ready
         // service.RegisterDataReader<WorkersDataReader, WorkersDataObject>(ModuleId, config.WorkersConfig, dataReaderSettings);
-        service.RegisterDataReader<FederalTaxProfilesDataReader, FederalTaxProfilesDataObject>(ModuleId, config.FederalTaxProfilesConfig, dataReaderSettings);
+        //service.RegisterDataReader<FederalTaxProfilesDataReader, FederalTaxProfilesDataObject>(ModuleId, config.FederalTaxProfilesConfig, dataReaderSettings);
         service.RegisterDataReader<StateTaxProfilesDataReader, StateTaxProfilesDataObject>(ModuleId, config.StateTaxProfilesConfig, dataReaderSettings);
         service.RegisterDataReader<LocalTaxProfilesDataReader, LocalTaxProfilesDataObject>(ModuleId, config.LocalTaxProfilesConfig, dataReaderSettings);
         service.RegisterDataReader<TimeCardsDataReader, TimeCardsDataObject>(ModuleId, config.TimeCardsConfig, dataReaderSettings);
