@@ -38,6 +38,7 @@ public class AppV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefinitio
     {
         var options = factory.CreateProviderOptionsWithNoDefaultResolver();
         // Configure Data Object Keys for Data Objects that do not use the default
+
         this.RegisterKeysForObject<WorkersDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<FederalTaxProfilesDataObject>(options, connectorDefinition);
         this.RegisterKeysForObject<StateTaxProfilesDataObject>(options, connectorDefinition);
@@ -55,7 +56,8 @@ public class AppV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefinitio
             UseChangeDetection = true
         };
         // Register Data Reader configurations for the Cache Writer Service
-        service.RegisterDataReader<WorkersDataReader, WorkersDataObject>(ModuleId, config.WorkersConfig, dataReaderSettings);
+        //todo: enable workers once their data object is ready
+        // service.RegisterDataReader<WorkersDataReader, WorkersDataObject>(ModuleId, config.WorkersConfig, dataReaderSettings);
         service.RegisterDataReader<FederalTaxProfilesDataReader, FederalTaxProfilesDataObject>(ModuleId, config.FederalTaxProfilesConfig, dataReaderSettings);
         service.RegisterDataReader<StateTaxProfilesDataReader, StateTaxProfilesDataObject>(ModuleId, config.StateTaxProfilesConfig, dataReaderSettings);
         service.RegisterDataReader<LocalTaxProfilesDataReader, LocalTaxProfilesDataObject>(ModuleId, config.LocalTaxProfilesConfig, dataReaderSettings);
