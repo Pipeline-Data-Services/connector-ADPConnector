@@ -1,4 +1,9 @@
 namespace Connector.App.v1;
+using Connector.App.v1.FederalTaxProfiles;
+using Connector.App.v1.LaborChargeCodes;
+using Connector.App.v1.LocalTaxProfiles;
+using Connector.App.v1.StateTaxProfiles;
+using Connector.App.v1.TimeCards;
 using Connector.App.v1.Workers;
 using ESR.Hosting.CacheWriter;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +27,11 @@ public class AppV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefinitio
         serviceCollection.AddSingleton<ICacheWriterServiceDefinition<AppV1CacheWriterConfig>>(this);
         // Register Data Readers as Singletons
         serviceCollection.AddSingleton<WorkersDataReader>();
+        serviceCollection.AddSingleton<FederalTaxProfilesDataReader>();
+        serviceCollection.AddSingleton<StateTaxProfilesDataReader>();
+        serviceCollection.AddSingleton<LocalTaxProfilesDataReader>();
+        serviceCollection.AddSingleton<TimeCardsDataReader>();
+        serviceCollection.AddSingleton<LaborChargeCodesDataReader>();
     }
 
     public override IDataObjectChangeDetectorProvider ConfigureChangeDetectorProvider(IChangeDetectorFactory factory, ConnectorDefinition connectorDefinition)
@@ -29,6 +39,11 @@ public class AppV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefinitio
         var options = factory.CreateProviderOptionsWithNoDefaultResolver();
         // Configure Data Object Keys for Data Objects that do not use the default
         this.RegisterKeysForObject<WorkersDataObject>(options, connectorDefinition);
+        this.RegisterKeysForObject<FederalTaxProfilesDataObject>(options, connectorDefinition);
+        this.RegisterKeysForObject<StateTaxProfilesDataObject>(options, connectorDefinition);
+        this.RegisterKeysForObject<LocalTaxProfilesDataObject>(options, connectorDefinition);
+        this.RegisterKeysForObject<TimeCardsDataObject>(options, connectorDefinition);
+        this.RegisterKeysForObject<LaborChargeCodesDataObject>(options, connectorDefinition);
         return factory.CreateProvider(options);
     }
 
@@ -41,5 +56,10 @@ public class AppV1CacheWriterServiceDefinition : BaseCacheWriterServiceDefinitio
         };
         // Register Data Reader configurations for the Cache Writer Service
         service.RegisterDataReader<WorkersDataReader, WorkersDataObject>(ModuleId, config.WorkersConfig, dataReaderSettings);
+        service.RegisterDataReader<FederalTaxProfilesDataReader, FederalTaxProfilesDataObject>(ModuleId, config.FederalTaxProfilesConfig, dataReaderSettings);
+        service.RegisterDataReader<StateTaxProfilesDataReader, StateTaxProfilesDataObject>(ModuleId, config.StateTaxProfilesConfig, dataReaderSettings);
+        service.RegisterDataReader<LocalTaxProfilesDataReader, LocalTaxProfilesDataObject>(ModuleId, config.LocalTaxProfilesConfig, dataReaderSettings);
+        service.RegisterDataReader<TimeCardsDataReader, TimeCardsDataObject>(ModuleId, config.TimeCardsConfig, dataReaderSettings);
+        service.RegisterDataReader<LaborChargeCodesDataReader, LaborChargeCodesDataObject>(ModuleId, config.LaborChargeCodesConfig, dataReaderSettings);
     }
 }

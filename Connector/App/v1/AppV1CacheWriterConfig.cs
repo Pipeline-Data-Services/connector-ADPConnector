@@ -1,4 +1,9 @@
 namespace Connector.App.v1;
+using Connector.App.v1.FederalTaxProfiles;
+using Connector.App.v1.LaborChargeCodes;
+using Connector.App.v1.LocalTaxProfiles;
+using Connector.App.v1.StateTaxProfiles;
+using Connector.App.v1.TimeCards;
 using Connector.App.v1.Workers;
 using ESR.Hosting.CacheWriter;
 using Json.Schema.Generation;
@@ -15,4 +20,9 @@ public class AppV1CacheWriterConfig
 {
     // Data Reader configuration
     public CacheWriterObjectConfig WorkersConfig { get; set; } = new();
+    public CacheWriterObjectConfig FederalTaxProfilesConfig { get; set; } = new();
+    public CacheWriterObjectConfig StateTaxProfilesConfig { get; set; } = new();
+    public CacheWriterObjectConfig LocalTaxProfilesConfig { get; set; } = new();
+    public CacheWriterObjectConfig TimeCardsConfig { get; set; } = new();
+    public CacheWriterObjectConfig LaborChargeCodesConfig { get; set; } = new();
 }
